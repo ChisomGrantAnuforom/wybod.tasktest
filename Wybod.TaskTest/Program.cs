@@ -7,6 +7,15 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IDataContext, DataContext>();
 builder.Services.AddScoped<ITaskRepository, TaskRepository>();
 
+
+builder.Services.AddControllers();
+builder.Services.AddSingleton<ITaskRepository, TaskRepository>();
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
+});
+
 var app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
@@ -17,13 +26,7 @@ if (!app.Environment.IsDevelopment())
 //
 //
 // var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddControllers();
-builder.Services.AddSingleton<ITaskRepository, TaskRepository>();
-builder.Services.AddCors(options =>
-{
-    options.AddDefaultPolicy(policy =>
-        policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
-});
+
 
 app.UseCors();
 app.MapControllers();

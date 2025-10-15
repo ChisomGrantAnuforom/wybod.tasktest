@@ -1,22 +1,34 @@
 <template>
-  <div v-if="task">
-    <h2>{{ task.title }}</h2>
-    <p>{{ task.description }}</p>
-    <p>Status: {{ task.isCompleted ? 'Completed' : 'Pending' }}</p>
-    <p v-if="task.completedAt">Completed At: {{ new Date(task.completedAt).toLocaleString() }}</p>
+  <div>
+    <h2>Create Task</h2>
+    <form @submit.prevent="submit">
+      <div>
+        <input v-model="title" placeholder="Title" required />
+      </div>
+      <div>
+        <textarea v-model="description" placeholder="Description" required></textarea>
+      </div>
+      <button type="submit">Create</button>
+    </form>
   </div>
 </template>
 
-<script setup>
-import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+<script lang="ts" setup>
+import { ref } from 'vue';
 import api from '../api';
+import { useRouter } from 'vue-router';
 
-const route = useRoute();
-const task = ref(null);
+const title = ref('');
+const description = ref('');
+const router = useRouter();
 
-onMounted(async () => {
-  const res = await api.get(`/${route.params.id}`);
-  task.value = res.data;
-});
+const submit = async () => {
+  await api.post('/', {
+    title: title.value,
+    description: description.value,
+    isCompleted: false
+  });
+  router.push('/');
+};
 </script>
+
